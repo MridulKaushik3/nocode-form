@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block create_form_btn %}
+<a href="{% url 'create_form' %}" class="btn btn-success mb-3">
+    ➕ Create New Form
+</a>
+{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Admin Dashboard</h1>
+
+<table class="table table-bordered align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>Form Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for form in forms %}
+        <tr>
+            <td>{{ form.title }}</td>
+            <td>{{ form.description }}</td>
+            <td class="d-flex flex-wrap gap-2">
+
+                <!-- View Responses (Important first) -->
+                <a href="{% url 'form_responses' form.id %}" class="btn btn-sm btn-info">
+                    Responses
+                </a>
+
+                <!-- Download CSV -->
+                <a href="{% url 'export_responses_csv' form.id %}" class="btn btn-sm btn-dark">
+                    Download CSV
+                </a>
+
+                <!-- Edit Fields -->
+                <a href="{% url 'add_fields' form.id %}" class="btn btn-sm btn-primary">
+                    Edit
+                </a>
+
+                <!-- View Form (Public) -->
+                <a href="{% url 'fill_form' form.id %}" class="btn btn-sm btn-success" target="_blank">
+                    View
+                </a>
+
+                <!-- Copy Link -->
+                <button class="btn btn-sm btn-secondary"
+                        data-link="{{ request.scheme }}://{{ request.get_host }}{% url 'fill_form' form.id %}"
+                        onclick="copyLink(this.dataset.link)">
+                    Copy Link
+                </button>
+
+                <!-- Duplicate Form -->
+                <a href="{% url 'duplicate_form' form.id %}" class="btn btn-sm btn-warning">
+                    Duplicate
+                </a>
+
+                <!-- Delete Form -->
+                <a href="{% url 'delete_form' form.id %}" class="btn btn-sm btn-danger"
+                   onclick="return confirm('Delete this form?')">
+                    Delete
+                </a>
+
+            </td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="3">No forms created yet.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<!-- Copy Link JS -->
+<script>
+function copyLink(link) {
+    navigator.clipboard.writeText(link)
+        .then(() => alert("Form link copied!"))
+        .catch(() => alert("Failed to copy link."));
+}
+</script>
+
+{% endblock %}

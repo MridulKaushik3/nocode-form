@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>{{ form.title }}</h2>
+    <p>{{ form.description }}</p>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {% for field in form.fields.all %}
+        <div>
+            <label>{{ field.label }}</label><br>
+
+            {% if field.field_type == "text" %}
+            <input type="text" name="{{ field.id }}">
+
+            {% elif field.field_type == "textarea" %}
+            <textarea name="{{ field.id }}"></textarea>
+
+            {% elif field.field_type == "select" %}
+            <select name="{{ field.id }}">
+                {% for opt in field.get_options %}
+                <option value="{{ opt }}">{{ opt }}</option>
+                {% endfor %}
+            </select>
+
+            {% elif field.field_type == "radio" %}
+            {% for opt in field.get_options %}
+            <input type="radio" name="{{ field.id }}" value="{{ opt }}"> {{ opt }}
+            {% endfor %}
+
+            {% elif field.field_type == "checkbox" %}
+            {% for opt in field.get_options %}
+            <input type="checkbox" name="{{ field.id }}" value="{{ opt }}"> {{ opt }}
+            {% endfor %}
+
+            {% endif %}
+        </div>
+        <br>
+        {% endfor %}
+
+        <button type="submit">Submit</button>
+    </form>
+{% endblock %}

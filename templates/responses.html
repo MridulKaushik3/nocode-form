@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Responses for "{{ form.title }}"</h2>
+    <a href="{% url 'export_responses_csv' form.id %}">
+        📥 Download CSV
+    </a>
+    <hr>
+
+    {% for response in responses %}
+    <hr>
+    <p><strong>Submitted at:</strong> {{ response.submitted_at }}</p>
+
+    <ul>
+        {% for answer in response.answers.all %}
+        <li>
+            <strong>{{ answer.field.label }}:</strong>
+            {{ answer.value }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% empty %}
+    <p>No responses yet.</p>
+    {% endfor %}
+
+    <a href="{% url 'dashboard' %}">⬅ Back to Dashboard</a>
+{% endblock %}

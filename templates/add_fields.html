@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Fields{% endblock %}
+
+{% block content %}
+<h3>Add Fields to "{{ form.title }}"</h3>
+
+<form method="POST" class="card p-3 mb-4">
+    {% csrf_token %}
+
+    <div class="mb-2">
+        <label class="form-label">Field Label</label>
+        <input type="text" name="label" class="form-control" required>
+    </div>
+
+    <div class="mb-2">
+        <label class="form-label">Field Type</label>
+        <select name="field_type" class="form-select" required id="fieldType">
+            <option value="">-- Select --</option>
+            <option value="text">Text</option>
+            <option value="textarea">Textarea</option>
+            <option value="select">Dropdown</option>
+            <option value="radio">Radio</option>
+            <option value="checkbox">Checkbox</option>
+        </select>
+    </div>
+
+    <div class="mb-2" id="optionsBox" style="display:none;">
+        <label class="form-label">Options (comma separated)</label>
+        <input type="text" name="options" class="form-control">
+    </div>
+
+    <div class="form-check mb-3">
+        <input type="checkbox" name="required" class="form-check-input">
+        <label class="form-check-label">Required</label>
+    </div>
+
+    <button class="btn btn-primary">Add Field</button>
+</form>
+
+<h5>Current Fields</h5>
+<ul class="list-group">
+    {% for field in fields %}
+        <li class="list-group-item">
+            {{ field.label }} ({{ field.field_type }})
+        </li>
+    {% empty %}
+        <li class="list-group-item">No fields added yet</li>
+    {% endfor %}
+</ul>
+
+<br>
+<a href="{% url 'dashboard' %}" class="btn btn-success">
+    ✔ Done
+</a>
+
+<script>
+document.getElementById("fieldType").addEventListener("change", function () {
+    const optionsBox = document.getElementById("optionsBox");
+    const typesWithOptions = ["select", "radio", "checkbox"];
+    optionsBox.style.display = typesWithOptions.includes(this.value) ? "block" : "none";
+});
+</script>
+
+{% endblock %}
